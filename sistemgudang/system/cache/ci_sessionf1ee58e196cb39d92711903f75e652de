@@ -1,0 +1,5 @@
+__ci_last_regenerate|i:1598522706;message|s:302:"<div class="alert alert-error alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-warning"></i> Perhatian!</h4>
+                Username dan Password tidak boleh kosong
+              </div>";__ci_vars|a:1:{s:7:"message";s:3:"new";}
