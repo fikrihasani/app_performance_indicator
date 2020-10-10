@@ -95,6 +95,9 @@
 				</div>
 			</div>
 		</div>
+		<div id="aaa">
+		
+		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<div class="demo-form-wrapper">
@@ -127,7 +130,7 @@
 
 
 window.onload = function () {
-
+var dataPoints = [];
 var chart = new CanvasJS.Chart("chartContainer", {
 	animationEnabled: true,
 	theme: "light1", // "light1", "light2", "dark1", "dark2"
@@ -145,41 +148,58 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	data: [{
 		type: "column",
 		yValueFormatString: "#0.0#\"%\"",
-		dataPoints: [
-			{ label: "Check In", y: 95 },	
-			{ label: "Hall", y: 70 },	
-			{ label: "Koridor", y: 100 },
-			{ label: "Toilet", y: 100 },	
-			{ label: "Baggage Claim", y: 100 },
-			{ label: "Kantor", y: 75 },
-			{ label: "Outdoor", y: 80 },
-			{ label: "Kedatangan", y: 80 }
-			
-		]
+		dataPoints: dataPoints,
 	}]
 });
-chart.render();
+
+$.ajax({
+	type: "GET",
+	url: base_url+"Info/getData",
+	// data: ,
+	dataType: "json",
+	success: function (response) {
+		console.log(response);
+		$.each(response, function(key, value){
+			console.log(value);
+        	dataPoints.push({label: value['x'], y: parseInt(value['y'])});
+   		});
+		console.log(dataPoints);
+    	chart.render();
+	},
+	error: function(response){
+		console.log(response);
+	}
+});
+
+// $.getJSON(<?php echo base_url()?>+"Info/getData", function(data) {  
+// 	alert(data);
+//     $.each(data, function(key, value){
+//         dataPoints.push({x: value['label'], y: parseInt(value['nilai'])});
+//     });
+//     chart.render();
+// });
+// chart.render();
 
 }
 </script>
 <script>
-	 $('#select-filter2').click(function() {
-		console.log(base_url + 'dashboard/source_grafik');
-		data_send = new Object();
-		data_send = $('#formgrafik').serializeObject();
-		$.ajax({
-			url : "<?php echo site_url('dashboard/source_grafik');?>",
-			data : data_send, 
-			type : 'GET',
-			dataType : "json",
-			success : function(result) {
-				Graph('chart-1', result.data_resiko, result.month, result.year);
-			}
+	//  $('#select-filter2').click(function() {
+	// 	console.log(base_url + 'dashboard/source_grafik');
+	// 	data_send = new Object();
+	// 	data_send = $('#formgrafik').serializeObject();
+	// 	$.ajax({
+	// 		url : "<?php echo site_url('dashboard/source_grafik');?>",
+	// 		data : data_send, 
+	// 		type : 'GET',
+	// 		dataType : "json",
+	// 		success : function(result) {
+	// 			Graph('chart-1', result.data_resiko, result.month, result.year);
+	// 		}
 
-		});
-	});
+	// 	});
+	// });
 
-	$('#select-filter2').click();
+	// $('#select-filter2').click();
 
 </script>
 	<script src="<?php echo base_url('assets/js/highcharts.js')?>"></script>

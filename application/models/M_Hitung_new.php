@@ -1,5 +1,5 @@
-<?php
-	class M_hitung extends CI_Model
+<?
+	class M_Hitung_new extends CI_Model
 	{
 		public function __Construct(){
 			parent:: __Construct();

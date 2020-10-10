@@ -54,7 +54,7 @@
                 </li>
                 <li class="dropdown hidden-xs">
                   <button class="navbar-account-btn" data-toggle="dropdown" aria-haspopup="true">
-                  <img class="rounded" width="36" height="36" src="<?= base_url('assets/upload/profile/') . $user['image']; ?>"><?= $user['nama']; ?>
+                  <!-- <img class="rounded" width="36" height="36" src="<?= base_url('assets/upload/profile/') . $user['image']; ?>"><?= $user['nama']; ?> -->
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">

@@ -5,7 +5,7 @@
         <a class="login-brand" href="index.html">
           <img class="img-responsive" src="<?= base_url();?>assets/img/angkasa.png" alt="Elephant">
         </a>
-        <h3 class="login-heading">Sign in</h3>
+        <h3 class="login-heading">Sign in hello</h3>
         <div class="login-form">
           <form data-toggle="md-validator" method="post" action="<?= base_url();?>auth">
             <div class="md-form-group md-label-floating">

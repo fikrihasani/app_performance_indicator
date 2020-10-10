@@ -26,5 +26,8 @@
    
    <!-- chart.js -->
    <script type="text/javascript" src="<?php echo base_url().'assets/js/chart.min.js'?>"></script>
-  </head>
+    <script>
+        var base_url = "<?php echo base_url();?>";
+    </script>
+</head>
   <body class="layout layout-header-fixed">
