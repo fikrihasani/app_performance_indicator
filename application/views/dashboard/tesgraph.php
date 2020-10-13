@@ -98,9 +98,9 @@
 								</div>
 							</div>
 							<div class='clearfix'></div>
-							<div class='col-md-4'>
+							<!-- <div class='col-md-4'>
 								<button type="button" class="btn btn-primary ml-10" id='select-filter2'>Filter</button>
-							</div>
+							</div> -->
 						</form>
 					</div>
 				</div>
@@ -163,20 +163,23 @@
 
 window.onload = function () {
 	$($("#lokasi_id")).change(function (e) { 
-		e.preventDefault();
-		
+		displayChart($("#lokasi_id").val());
+		displayChartError($("#lokasi_id").val());
 	});
-	displayChart();
-	displayChartError();
+	var lokasi_id = $("#lokasi_id").val();
+	displayChart(lokasi_id);
+	displayChartError(lokasi_id);
 	var interval1 = setInterval(function(){
-		displayChart();
+		lokasi_id = $("#lokasi_id").val()
+		displayChart(lokasi_id);
 	}, 60*1000);
 	var interval2 = setInterval(function(){
-		displayChartError();
+		lokasi_id = $("#lokasi_id").val()
+		displayChartError(lokasi_id);
 	}, 60*1000);
 }
 
-function displayChart() {
+function displayChart(lokasi_id) {
 	var dataPoints = [];
 	var chart = new CanvasJS.Chart("chartContainer", {
 		animationEnabled: true,
@@ -201,7 +204,7 @@ function displayChart() {
 
 	$.ajax({
 		type: "GET",
-		url: base_url+"Info/getData",
+		url: base_url+"Info/getData/"+lokasi_id,
 		// data: ,
 		dataType: "json",
 		beforeSend: function(){
@@ -226,7 +229,7 @@ function displayChart() {
 	});
 }
 
-function displayChartError(){
+function displayChartError(lokasi_id){
 	var dataPointsError = [];
 	var chartError = new CanvasJS.Chart("chartContainerError", {
 		animationEnabled: true,
@@ -253,7 +256,7 @@ function displayChartError(){
 
 	$.ajax({
 		type: "GET",
-		url: base_url+"Info/getDataError",
+		url: base_url+"Info/getDataError/"+lokasi_id,
 		// data: ,
 		dataType: "json",
 		beforeSend: function(){
@@ -278,24 +281,6 @@ function displayChartError(){
 }
 </script>
 <script>
-	//  $('#select-filter2').click(function() {
-	// 	console.log(base_url + 'dashboard/source_grafik');
-	// 	data_send = new Object();
-	// 	data_send = $('#formgrafik').serializeObject();
-	// 	$.ajax({
-	// 		url : "<?php echo site_url('dashboard/source_grafik');?>",
-	// 		data : data_send, 
-	// 		type : 'GET',
-	// 		dataType : "json",
-	// 		success : function(result) {
-	// 			Graph('chart-1', result.data_resiko, result.month, result.year);
-	// 		}
-
-	// 	});
-	// });
-
-	// $('#select-filter2').click();
-
 </script>
 	<script src="<?php echo base_url('assets/js/highcharts.js')?>"></script>
 	<script src="<?php echo base_url('assets/js/highcharts-3d.js')?>"></script>

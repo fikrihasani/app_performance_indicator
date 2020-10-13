@@ -11,7 +11,7 @@ class Info extends CI_Controller{
     
     public function getData($id = null){
         if (!is_null($id)) {
-            $tmp = $this->db->query("select avg(sca_dokumentasi.nilai) as y,area.nama as x from sca_dokumentasi inner join area on sca_dokumentasi.area=area.id where area.id_lokasi = ".$id." group by sca_dokumentasi.area ");
+            $tmp = $this->db->query("select avg(sca_dokumentasi.nilai) as y,area.nama as x from sca_dokumentasi inner join area on sca_dokumentasi.area=area.id where area.id_lokasi = ".$id." and time like '".date("Y-m-d")."%' group by sca_dokumentasi.area ");
         }else{
             $tmp = $this->db->query("select avg(pemeriksaan.hasil)*100 as y,area.nama as x from pemeriksaan inner join area on pemeriksaan.id_area=area.id group by pemeriksaan.id_area");
         }
@@ -25,7 +25,7 @@ class Info extends CI_Controller{
 
     public function getDataError($id = null){
         if(!is_null($id)){
-            $tmp = $this->db->query("select avg(pemeriksaan.hasil)*100 as nilai,materials.standart from pemeriksaan inner join materials on pemeriksaan.id_material=materials.id where area.id_lokasi = ".$id." group by pemeriksaan.id_material");
+            $tmp = $this->db->query("select avg(pemeriksaan.hasil)*100 as nilai,materials.standart from pemeriksaan inner join materials on pemeriksaan.id_material=materials.id INNER JOIN area on pemeriksaan.id_area=area.id where area.id_lokasi = ".$id." and time like '".date("Y-m-d")."%' group by pemeriksaan.id_material ");
         }else{
             $tmp = $this->db->query("select avg(pemeriksaan.hasil)*100 as nilai,materials.standart from pemeriksaan inner join materials on pemeriksaan.id_material=materials.id group by pemeriksaan.id_material");
         }
@@ -37,14 +37,14 @@ class Info extends CI_Controller{
         echo json_encode($data['performances_area'], JSON_NUMERIC_CHECK);
     }
 
-    public function filter($type, $id){
-        if($type == 2){
-            $data = $this->getDataError($id);
-        }else{
-            $data = $this->getData($id);
-        }
-        echo $data;
-    }
+    // public function filter($type,$id){
+    //     if($type == 2){
+    //         $data = $this->getDataError($id);
+    //     }else{
+    //         $data = $this->getData($id);
+    //     }
+    //     echo $data;
+    // }
 
     public function index(){
         $data['title'] = 'Dashboard';
