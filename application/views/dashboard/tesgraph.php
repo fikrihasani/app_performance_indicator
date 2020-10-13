@@ -81,16 +81,27 @@
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body" style="display: block;">
-						<div class='col-md-2'>
-							<div class="input-group date">
-								<label for="nama">Pilih Tanggal</label>
-								<input type="text" class="form-control" data-provide="datepicker" id="date-choose" name="date" min="2018-01-01" max='<?php date('Y-m-d')?>'>
+						<form action="/Info/FilterData" method="post">
+							<div class='col-md-6'>
+								<div class="input-group date">
+									<label for="nama">Pilih Lokasi</label>
+									<select name="lokasi_id" id="lokasi_id" class="form-control">
+										<?php
+										foreach ($lokasi as $key => $value) {
+											# code...
+										?>
+											<option value="<?php echo $value['id_lokasi'];?>"><?php echo $value['nama_lokasi']; ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class='clearfix'></div>
-						<div class='col-md-4'>
-							<button type="button" class="btn btn-primary ml-10" id='select-filter2'>Filter</button>
-						</div>
+							<div class='clearfix'></div>
+							<div class='col-md-4'>
+								<button type="button" class="btn btn-primary ml-10" id='select-filter2'>Filter</button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -101,8 +112,29 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="demo-form-wrapper">
-					<div class="form form-horizontal">
+					<div class="form form-horizontal" style="padding-top:20px">
+						<div id="loadChart" style="display:none">
+							<div class="alert alert-info" role="alert">
+								<center>
+									Sedang Mengambil data
+								</center>
+							</div>
+						</div>
 						<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="demo-form-wrapper">
+					<div class="form form-horizontal">
+						<div id="loadChartError" style="display:none">
+							<div class="alert alert-info" role="alert">
+								<center>
+									Sedang Mengambil data
+								</center>
+							</div>
+						</div>
+						<div id="chartContainerError" style="height: 300px; width: 100%;"></div>
 					</div>
 				</div>
 			</div>
@@ -130,56 +162,119 @@
 
 
 window.onload = function () {
-var dataPoints = [];
-var chart = new CanvasJS.Chart("chartContainer", {
-	animationEnabled: true,
-	theme: "light1", // "light1", "light2", "dark1", "dark2"
-	title: {
-		text: 'Readiness Factor Area Bandar Udara Jenderal Ahmad Yani Semarang'
-	},
-	axisY: {
-		title: "Readiness Factor",
-		suffix: "%",
-		includeZero: false
-	},
-	axisX: {
-		title: "Area"
-	},
-	data: [{
-		type: "column",
-		yValueFormatString: "#0.0#\"%\"",
-		dataPoints: dataPoints,
-	}]
-});
+	$($("#lokasi_id")).change(function (e) { 
+		e.preventDefault();
+		
+	});
+	displayChart();
+	displayChartError();
+	var interval1 = setInterval(function(){
+		displayChart();
+	}, 60*1000);
+	var interval2 = setInterval(function(){
+		displayChartError();
+	}, 60*1000);
+}
 
-$.ajax({
-	type: "GET",
-	url: base_url+"Info/getData",
-	// data: ,
-	dataType: "json",
-	success: function (response) {
-		console.log(response);
-		$.each(response, function(key, value){
-			console.log(value);
-        	dataPoints.push({label: value['x'], y: parseInt(value['y'])});
-   		});
-		console.log(dataPoints);
-    	chart.render();
-	},
-	error: function(response){
-		console.log(response);
-	}
-});
+function displayChart() {
+	var dataPoints = [];
+	var chart = new CanvasJS.Chart("chartContainer", {
+		animationEnabled: true,
+		theme: "light1", // "light1", "light2", "dark1", "dark2"
+		title: {
+			text: 'Readiness Factor Area Bandar Udara Jenderal Ahmad Yani Semarang'
+		},
+		axisY: {
+			title: "Readiness Factor",
+			suffix: "%",
+			includeZero: false
+		},
+		axisX: {
+			title: "Area"
+		},
+		data: [{
+			type: "column",
+			yValueFormatString: "#0.0#\"%\"",
+			dataPoints: dataPoints,
+		}]
+	});
 
-// $.getJSON(<?php echo base_url()?>+"Info/getData", function(data) {  
-// 	alert(data);
-//     $.each(data, function(key, value){
-//         dataPoints.push({x: value['label'], y: parseInt(value['nilai'])});
-//     });
-//     chart.render();
-// });
-// chart.render();
+	$.ajax({
+		type: "GET",
+		url: base_url+"Info/getData",
+		// data: ,
+		dataType: "json",
+		beforeSend: function(){
+			$("#loadChart").show();
+		},
+		success: function (response) {
+			console.log(response);
+			$.each(response, function(key, value){
+				console.log(value);
+				dataPoints.push({label: value['x'], y: parseInt(value['y'])});
+			});
+			console.log(dataPoints);
+			chart.render();
+		},
+		error: function(response){
+			console.log(response);
+		},
+		complete: function(){
+			$("#loadChart").hide();
+			console.log('finished rendering');
+		}
+	});
+}
 
+function displayChartError(){
+	var dataPointsError = [];
+	var chartError = new CanvasJS.Chart("chartContainerError", {
+		animationEnabled: true,
+		theme: "light1", // "light1", "light2", "dark1", "dark2"
+		title: {
+			text: 'Readiness Factor Area Bandar Udara Jenderal Ahmad Yani Semarang'
+		},
+		axisY: {
+			title: "Readiness Factor",
+			suffix: "%",
+			includeZero: false
+		},
+		axisX: {
+			title: "Area"
+		},
+		data: [{
+			type: "column",
+			yValueFormatString: "#0.0#\"%\"",
+			dataPoints: dataPointsError,
+		}]
+	}); 
+
+
+
+	$.ajax({
+		type: "GET",
+		url: base_url+"Info/getDataError",
+		// data: ,
+		dataType: "json",
+		beforeSend: function(){
+			$("#loadChartError").show();
+		},
+		success: function (response) {
+			console.log(response);
+			$.each(response, function(key, value){
+				dataPointsError.push({label: value['x'], y: parseInt(value['y'])});
+			});
+			console.log(dataPointsError);
+			chartError.render();
+		},
+		error: function(response){
+			console.log(response);
+		},
+		complete: function(){
+			$("#loadChartError").hide();
+			console.log('finished rendering Error');
+		}
+	});
 }
 </script>
 <script>
